@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FoodSpawner : MonoBehaviour
+public class CreatureSpawner : MonoBehaviour
 {
     public GameObject objectToDuplicate; // The object you want to duplicate.
     public int numberOfDuplicates = 100; // Number of duplicates to create.
@@ -12,7 +12,7 @@ public class FoodSpawner : MonoBehaviour
     {
         
     }
-    public void FoodSpawn()
+    public void CreatureSpawn()
     {        
         GameObject[] creatures = GameObject.FindGameObjectsWithTag("Creature");
 

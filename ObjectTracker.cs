@@ -20,9 +20,10 @@ public class ObjectTracker: MonoBehaviour
     private int[] info = new int[3];
 
 
-    public FoodSpawner FoodSpawner;
-    public Enemy_behaviour enemy;
-    public AI_behaviour creature;
+    // Don't need these
+    // public FoodSpawner FoodSpawner;
+    // public Enemy_behaviour enemy;
+    // public AI_behaviour creature;
 
     // Initialize the round counter text
     void Start()
@@ -70,11 +71,29 @@ public class ObjectTracker: MonoBehaviour
         agentList = GameObject.FindGameObjectsWithTag("Creature");
         enemyList = GameObject.FindGameObjectsWithTag("Enemy");
         Debug.Log(enemyList.Length);
-        
+
         UpdateRoundCounter();
-        creature.Reproduce();
-        FoodSpawner.FoodSpawn();
-        enemy.Reproduce();
+
+        // There was no creature assigned to the creature variable. Not sure if this is what you needed, but this is how
+        // you can get a creature and call Reproduce on it. This will get all the creatures and do that.
+        //creature.Reproduce();
+        // Get each creature and call Reproduce() on it
+        foreach(GameObject o in agentList) {
+            AI_behaviour creature = o.GetComponent<AI_behaviour>();
+            creature.Reproduce();
+        }
+        
+        // There was no enemy assigned to the enemy variable. Not sure if this is what you needed, but this is how
+        // you can get an enemy and call Reproduce on it. This will get all the creatures and do that.
+        //enemy.Reproduce();
+        // Get each creature and call Reproduce() on it
+         foreach(GameObject o in enemyList) {
+            Enemy_behaviour enemy = o.GetComponent<Enemy_behaviour>();
+            enemy.Reproduce();
+        }
+       
+        // Food seems to be handled elsewhere
+        //FoodSpawner.FoodSpawn(ref numFoodToSpawn);
 
     }
 
