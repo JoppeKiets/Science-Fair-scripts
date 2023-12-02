@@ -11,7 +11,9 @@ public class ObjectTracker: MonoBehaviour
     public GameObject[] agentList;
     public GameObject[] enemyList;
 
-    
+    public GameObject creature; // The object you want to duplicate.
+    public GameObject enemy; // The object you want to duplicate.
+
     private int currentRound = 0;    
     private float time = 0f;
     private float RoundLength = 10f;
@@ -19,10 +21,7 @@ public class ObjectTracker: MonoBehaviour
     private string logFilePath = "Assets/simulation_log.txt"; // Path to your log file
     private int[] info = new int[3];
 
-
-    public FoodSpawner FoodSpawner;
-    public Enemy_behaviour enemy;
-    public AI_behaviour creature;
+    public Vector2 mapSize = new Vector2(60f, 40f); // The size of the designated map area.
 
     // Initialize the round counter text
     void Start()
@@ -69,12 +68,59 @@ public class ObjectTracker: MonoBehaviour
         foodList = GameObject.FindGameObjectsWithTag("Food");
         agentList = GameObject.FindGameObjectsWithTag("Creature");
         enemyList = GameObject.FindGameObjectsWithTag("Enemy");
-        Debug.Log(enemyList.Length);
-        
+        Debug.Log(agentList.Length);
+
+        // when either agent or enemy goes extinct, revive that species
+        if (agentList.Length == 0)
+        {
+            for (int i = 0; i < 1; i++)
+            {
+                // Generate random position within the map bounds
+                Vector3 randomPosition = new Vector3(
+                    Random.Range(-mapSize.x / 2, mapSize.x / 2),
+                    Random.Range(-mapSize.y / 2, mapSize.y / 2), 0f
+                );
+
+                // Create a new instance of the objectToDuplicate at the random position
+                Instantiate(creature, randomPosition, Quaternion.identity);
+            }
+        }
+        if (enemyList.Length == 0)
+        {
+            for (int i = 0; i < 1; i++)
+            {
+                // Generate random position within the map bounds
+                Vector3 randomPosition = new Vector3(
+                    Random.Range(-mapSize.x / 2, mapSize.x / 2),
+                    Random.Range(-mapSize.y / 2, mapSize.y / 2), 0f
+                );
+
+                // Create a new instance of the objectToDuplicate at the random position
+                Instantiate(enemy, randomPosition, Quaternion.identity);
+            }
+        }
         UpdateRoundCounter();
-        creature.Reproduce();
-        FoodSpawner.FoodSpawn();
-        enemy.Reproduce();
+
+        // There was no creature assigned to the creature variable. Not sure if this is what you needed, but this is how
+        // you can get a creature and call Reproduce on it. This will get all the creatures and do that.
+        //creature.Reproduce();
+        // Get each creature and call Reproduce() on it
+        foreach(GameObject o in agentList) {
+            AI_behaviour creature = o.GetComponent<AI_behaviour>();
+            creature.Reproduce();
+        }
+        
+        // There was no enemy assigned to the enemy variable. Not sure if this is what you needed, but this is how
+        // you can get an enemy and call Reproduce on it. This will get all the creatures and do that.
+        //enemy.Reproduce();
+        // Get each creature and call Reproduce() on it
+         foreach(GameObject o in enemyList) {
+            Enemy_behaviour enemy = o.GetComponent<Enemy_behaviour>();
+            enemy.Reproduce();
+        }
+       
+        // Food seems to be handled elsewhere
+        //FoodSpawner.FoodSpawn(ref numFoodToSpawn);
 
     }
 

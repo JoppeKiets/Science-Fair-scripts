@@ -5,8 +5,8 @@ using System.Linq;
 
 public class Enemy_behaviour : MonoBehaviour
 {
-    public int numRays = 36; // Number of rays to cast in a circle
-    public float maxRayDistance = 10f;
+    public int numRays = 18; // Number of rays to cast in a circle
+    public float maxRayDistance = 15f;
     public float[][] floatInputVectors = new float[36][];
     public string foodTag = "Food"; // Tag of the food object
     public string creatureTag = "Creature";
@@ -26,13 +26,9 @@ public class Enemy_behaviour : MonoBehaviour
     public float lifeSpan = 0f;
     public bool isDead = false;
 
-    public float maxHealth = 100f; // Maximum health value
-    public float currentHealth = 100f; // Current health value
-    public int attackAmount;
-    private float previousHealth; 
 
     public float maxEnergy = 100f; // Maximum health value
-    public float currentEnergy = 100f; // Current health value
+    public float currentEnergy = 0f; // Current health value
     private float energyGained = 40f; //how much they gain from eating Food
     private float previousEnergy; 
     
@@ -50,7 +46,7 @@ public class Enemy_behaviour : MonoBehaviour
     {
         
         // Initialize previousHealth to see if health changed at all
-        previousHealth = currentHealth;
+
         previousEnergy = currentEnergy;
 
 
@@ -185,15 +181,18 @@ public class Enemy_behaviour : MonoBehaviour
             elapsed = elapsed % 1f;
 
             // Subtract 1 energy per second
-            currentEnergy -= 1f;
-            
+            this.currentEnergy -= 1f;
+            if (this.currentEnergy <= 0f)
+            {
+                this.currentEnergy = 0f;
+            }
 
         }
 
-        // Starve
-        if (currentEnergy <= 0)
-        {           
-            Destroy(this.gameObject,3); 
+        // die of old age
+        if (this.lifeSpan >= 74)
+        {
+            Destroy(this.gameObject);
             GetComponent<Movement>().enabled = false;
         }
     }
@@ -213,7 +212,7 @@ public class Enemy_behaviour : MonoBehaviour
     }
     public void Reproduce()
     {
-        
+        numberOfChildren = 0;
         if (currentEnergy >= 25f)
         {
             numberOfChildren = 2;
@@ -246,11 +245,9 @@ public class Enemy_behaviour : MonoBehaviour
                     Debug.LogWarning("Creature or NN component is null.");
                 }
             }
+            currentEnergy =- 25f;
+
         }
-
-        Destroy(gameObject); 
-        GetComponent<Movement>().enabled = false;
-
-
+        
     }
 }

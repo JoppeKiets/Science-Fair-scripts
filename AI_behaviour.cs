@@ -5,8 +5,8 @@ using System.Linq;
 
 public class AI_behaviour : MonoBehaviour
 {
-    public int numRays = 36; // Number of rays to cast in a circle
-    public float maxRayDistance = 10f;
+    public int numRays = 18; // Number of rays to cast in a circle
+    public float maxRayDistance = 12f;
     public float[][] floatInputVectors = new float[36][];
     public string foodTag = "Food"; // Tag of the food object
     private Color hitPlayerColor = Color.red;
@@ -24,14 +24,11 @@ public class AI_behaviour : MonoBehaviour
     public float lifeSpan = 0f;
     public bool isDead = false;
 
-    public float maxHealth = 100f; // Maximum health value
-    public float currentHealth = 100f; // Current health value
-    public int attackAmount;
-    private float previousHealth; 
+
 
     public float maxEnergy = 100f; // Maximum health value
-    public float currentEnergy = 100f; // Current health value
-    private float energyGained = 25f; //how much they gain from eating Food
+    public float currentEnergy = 0f; // Current health value
+    private float energyGained = 20f; //how much they gain from eating Food
     private float previousEnergy; 
     
 
@@ -47,8 +44,6 @@ public class AI_behaviour : MonoBehaviour
     void Awake()
     {
         
-        // Initialize previousHealth to see if health changed at all
-        previousHealth = currentHealth;
         previousEnergy = currentEnergy;
 
 
@@ -65,14 +60,12 @@ public class AI_behaviour : MonoBehaviour
     }
     void FixedUpdate()
     {
-        
-        
-        // Check if the energy has changed
-        if (currentEnergy != previousEnergy)
-        {
-            // Update the previous health value
-            previousEnergy = currentEnergy;
-        }
+            // Check if the energy has changed
+            if (currentEnergy != previousEnergy)
+            {
+                // Update the previous health value
+                previousEnergy = currentEnergy;
+            }
         //only do this once
         if(!isMutated)
         {
@@ -129,8 +122,8 @@ public class AI_behaviour : MonoBehaviour
 
             Vector3 rayEnd = hit.collider ? hit.point : (Vector2)rayStart + direction * maxRayDistance;
 
-            // the "1" is for the length of the ray
-            double[] inputVector = new double[1 + numObjectClasses]; // Input vector
+            // the "2" is for the length of the ray and current energy 
+            double[] inputVector = new double[2 + numObjectClasses]; // Input vector
 
             if (hit.collider != null)
             {
@@ -139,21 +132,21 @@ public class AI_behaviour : MonoBehaviour
                     Debug.DrawLine(rayStart, rayEnd, hitFoodColor);
                     // Use the length of the raycast as the distance to the food object
                     inputVector[0] = hit.distance / maxRayDistance; // Distance
-                    inputVector[1] = 1.0; // Food identification
+                    inputVector[2] = 1.0; // Food identification
                 }
                 else if (hit.collider.CompareTag("Creature"))
                 {
                     Debug.DrawLine(rayStart, rayEnd, hitPlayerColor);
 
                     inputVector[0] = hit.distance / maxRayDistance; // Distance
-                    inputVector[2] = 1.0; // Creature identification
+                    inputVector[3] = 1.0; // Creature identification
                 }
                 else 
                 {
                     Debug.DrawLine(rayStart, rayEnd, hitPlayerColor);
 
                     inputVector[0] = hit.distance / maxRayDistance; // Distance
-                    inputVector[3] = 1.0; // enemy identification
+                    inputVector[4] = 1.0; // enemy identification
                 }
             }
             else
@@ -161,7 +154,7 @@ public class AI_behaviour : MonoBehaviour
                 Debug.DrawLine(rayStart, rayEnd, Color.white);
                 inputVector[0] = 1.0; // Maximum distance (normalized)
             }
-
+            inputVector[1] = currentEnergy;
             // Store the input vector for this ray in the 'inputVectors' list or array.
             // You can use a list or array to collect all input vectors for later processing with your neural network.
             //inputVectors[i] = inputVector;
@@ -181,15 +174,19 @@ public class AI_behaviour : MonoBehaviour
             elapsed = elapsed % 1f;
 
             // Subtract 1 energy per second
-            currentEnergy -= 1f;
+            this.currentEnergy -= 1f;
+            if (this.currentEnergy <= 0f)
+            {
+                this.currentEnergy = 0f;
+            }
             
 
         }
 
-        // Starve
-        if (currentEnergy <= 0)
-        {           
-            Destroy(this.gameObject,3); 
+        // die of old age
+        if (this.lifeSpan >= 74)
+        {
+            Destroy(this.gameObject);
             GetComponent<Movement>().enabled = false;
         }
     }
@@ -210,12 +207,12 @@ public class AI_behaviour : MonoBehaviour
     public void Reproduce()
     {
         
-        if (currentEnergy >= 25f)
+        if (currentEnergy >= 60f)
         {
             numberOfChildren = 2;
         }
             
-        else
+        if (currentEnergy >=25f)
         {
             numberOfChildren = 1;
         }
@@ -244,11 +241,7 @@ public class AI_behaviour : MonoBehaviour
                     Debug.LogWarning("Creature or NN component is null.");
                 }
             }
+            currentEnergy =- 25f;
         }
-
-        Destroy(gameObject, 3); 
-        GetComponent<Movement>().enabled = false;
-
-
     }
 }
