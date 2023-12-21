@@ -4,62 +4,27 @@ using UnityEngine;
 
 public class CreatureSpawner : MonoBehaviour
 {
-    public GameObject objectToDuplicate; // The object you want to duplicate.
-    public int numberOfDuplicates = 100; // Number of duplicates to create.
-    public Vector2 mapSize = new Vector2(60f, 40f); // The size of the designated map area.
+    public GameObject agentPrefab;
+    private GameObject[] agentList;
+    public int floorScale = 1;
 
-    void awake()
+    // Update is called once per frame
+    void FixedUpdate()
     {
-        
-    }
-    public void CreatureSpawn()
-    {        
-        GameObject[] creatures = GameObject.FindGameObjectsWithTag("Creature");
+        agentList = GameObject.FindGameObjectsWithTag("Agent");
 
-        // Calculate the length once to avoid multiple calls
-        int creaturesLength = creatures.Length;
-        float floatValue = creaturesLength + Random.Range(-creaturesLength / 6, (int)(creaturesLength * 1.3f));
-
-        // Ensure floatValue stays within valid bounds
-        floatValue = Mathf.Clamp(floatValue, 0, Mathf.Infinity);
-
-        numberOfDuplicates = Mathf.RoundToInt(floatValue);
-        // Create duplicates
-        for (int i = 0; i < numberOfDuplicates; i++)
+        // if there are no agents in the scene, spawn one at a random location. 
+        // This is to ensure that there is always at least one agent in the scene.
+        if (agentList.Length < 1)
         {
-            // Generate random position within the map bounds
-            Vector3 randomPosition = new Vector3(
-                Random.Range(-mapSize.x / 2, mapSize.x / 2),
-                Random.Range(-mapSize.y / 2, mapSize.y / 2), 0f
-            );
-
-            // Create a new instance of the objectToDuplicate at the random position
-            Instantiate(objectToDuplicate, randomPosition, Quaternion.identity);
-        }
+            SpawnCreature();
+        } 
     }
-    void Start()
+
+    void SpawnCreature()
     {
-        GameObject[] creatures = GameObject.FindGameObjectsWithTag("Creature");
-
-        // Calculate the length once to avoid multiple calls
-        int creaturesLength = creatures.Length;
-        float floatValue = creaturesLength + Random.Range(-creaturesLength / 6, (int)(creaturesLength * 1.3f));
-
-        // Ensure floatValue stays within valid bounds
-        floatValue = Mathf.Clamp(floatValue, 0, Mathf.Infinity);
-
-        numberOfDuplicates = Mathf.RoundToInt(floatValue);
-        // Create duplicates
-        for (int i = 0; i < numberOfDuplicates; i++)
-        {
-            // Generate random position within the map bounds
-            Vector3 randomPosition = new Vector3(
-                Random.Range(-mapSize.x / 2, mapSize.x / 2),
-                Random.Range(-mapSize.y / 2, mapSize.y / 2), 0f
-            );
-
-            // Create a new instance of the objectToDuplicate at the random position
-            Instantiate(objectToDuplicate, randomPosition, Quaternion.identity);
-        }
+        int x = Random.Range(-100, 101)*floorScale;
+        int z = Random.Range(-100, 101)*floorScale;
+        Instantiate(agentPrefab, new Vector3((float)x, 0.75f, (float)z), Quaternion.identity);
     }
 }
