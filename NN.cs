@@ -5,9 +5,6 @@ public class NN : MonoBehaviour
     int [] networkShape = {16,32,2};
     public Layer [] layers;
 
-    // Awake is called when the script instance is being loaded.
-    // Start is called before the first frame update.
-    // Awake gets called before Start which is why we use Awake here
     public void Awake()
     {
         layers = new Layer[networkShape.Length - 1];

@@ -18,7 +18,6 @@ public class FoodSpawner : MonoBehaviour
         }
     }
 
-    // FixedUpdate is called once per physics frame
     void FixedUpdate()
     {
         //spawn food every second with timeElapsed

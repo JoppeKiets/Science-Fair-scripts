@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 
+
+// this code is a bit janky and could be optimized.
 //This class is optional and is what I was using to make the graphs in the simulation
-public class ObjectTracker : MonoBehaviour
+public class ObjectTracker : MonoBehaviour  
 {
     public GameObject[] foodList;
     public GameObject[] agentList;
@@ -13,7 +15,7 @@ public class ObjectTracker : MonoBehaviour
     private float time = 0f;
     private float RoundLength = 10f;
 
-    private string logFilePath = "Assets/simulation_log.txt"; // Path to your log file
+    private string logFilePath = "Assets/simulation_log.txt"; // Change path if necessary
     private int[] info = new int[2];
 
     // Initialize the round counter text

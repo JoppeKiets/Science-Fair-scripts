@@ -2,8 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-//This script is used to control the speed of the simulation put it on an empty game object in the scene to use it
-//It has some issues but it works for the most part
+//Some issues but it works for the most part
 public class SimSpeedController : MonoBehaviour
 {
     float fpsAvg = 0;

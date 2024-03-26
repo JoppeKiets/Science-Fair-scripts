@@ -37,7 +37,6 @@ public class Creature : MonoBehaviour
 
     public bool isDead = false;
 
-    // Start is called before the first frame update
     void Awake()
     {
         nn = gameObject.GetComponent<NN>();
@@ -50,7 +49,6 @@ public class Creature : MonoBehaviour
     {
         creatureLifespans.Clear();
     }
-    // Update is called once per frame
     void FixedUpdate()
     {
         //only do this once
@@ -95,8 +93,6 @@ public class Creature : MonoBehaviour
 
         // Set up a variable to store the angle between raycasts
         float angleBetweenRaycasts = 15;
-
-        // Set up an array to store the distances to the food objects detected by the raycasts
 
         // Use multiple raycasts to detect food objects
         RaycastHit hit;
@@ -149,14 +145,14 @@ public class Creature : MonoBehaviour
             LR = Input.GetAxis("Horizontal")/10;
         }
 
-        //Move the agent using the move function
+        //Move the agent
         movement.Move(FB, LR);
     }
 
     //this function gets called whenever the agent collides with a trigger. (Which in this case is the food)
     void OnTriggerEnter(Collider col)
     {
-        Transform parentObject = col.gameObject.transform.parent; // Get the parent GameObject
+        Transform parentObject = col.gameObject.transform.parent; 
 
         //if the agent collides with a food object, it will eat it and gain energy.
         if (col.gameObject.tag == "Food" && canEat)
